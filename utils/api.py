@@ -4,6 +4,7 @@ import typing
 
 import requests
 
+from utils.decorators import required_arguments
 from utils.webclient import do_get
 
 logging.basicConfig(
@@ -30,11 +31,8 @@ class AO3Api:
         }
         self.session.headers.update(headers)
 
+    @required_arguments('user_id')
     def get_user_works(self, user_id: str) -> typing.Optional[str]:
-        if user_id is None:
-            logger.error('user_id is empty!')
-            return
-
         logger.debug(f'Fetching works by user_id: {user_id}')
         url = f'{self.base_url}/users/{user_id}/works'
         result = do_get(url, exist_session=self.session)
@@ -42,11 +40,8 @@ class AO3Api:
         #     f.write(result)
         return result
 
+    @required_arguments('work_id')
     def get_work_details(self, work_id: str) -> typing.Optional[str]:
-        if work_id is None:
-            logger.error('user_id')
-            return
-
         logger.debug(f'Fetching work details by work_id: {work_id}')
         url = f'{self.base_url}/works/{work_id}'
         if self.view_adult:
@@ -56,11 +51,8 @@ class AO3Api:
         #     f.write(result)
         return result
 
+    @required_arguments('work_id')
     def get_work_index(self, work_id: str) -> typing.Optional[str]:
-        if work_id is None:
-            logger.error('user_id')
-            return
-
         logger.debug(f'Fetching work details by work_id: {work_id}')
         url = f'{self.base_url}/works/{work_id}/navigate'
         result = do_get(url, exist_session=self.session)
