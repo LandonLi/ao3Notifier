@@ -32,42 +32,28 @@ class AO3Api:
         self.session.headers.update(headers)
 
     @required_arguments('user_id')
-    def get_user_works(self, user_id: str) -> typing.Optional[str]:
+    def get_works(self, user_id: str) -> typing.Optional[str]:
         logger.debug(f'Fetching works by user_id: {user_id}')
         url = f'{self.base_url}/users/{user_id}/works'
         result = do_get(url, exist_session=self.session)
-        # with open('../test/resources/works.html', 'w', encoding='utf-8') as f:
-        #     f.write(result)
         return result
 
     @required_arguments('work_id')
-    def get_work_details(self, work_id: str) -> typing.Optional[str]:
-        logger.debug(f'Fetching work details by work_id: {work_id}')
-        url = f'{self.base_url}/works/{work_id}'
+    def get_index(self, work_id: str) -> typing.Optional[str]:
+        logger.debug(f'Fetching index by work_id: {work_id}')
+        url = f'{self.base_url}/works/{work_id}/navigate'
+        result = do_get(url, exist_session=self.session)
+        return result
+
+    @required_arguments('work_id,chapter_id')
+    def get_chapter(self, work_id, chapter_id):
+        logger.debug(f'Fetching chapter by work_id: {work_id} and chapter_id: {chapter_id}')
+        url = f'{self.base_url}/works/{work_id}/chapters/{chapter_id}'
         if self.view_adult:
             url += '?view_adult=true'
         result = do_get(url, exist_session=self.session)
-        # with open('../test/resources/work.html', 'w', encoding='utf-8') as f:
-        #     f.write(result)
-        return result
-
-    @required_arguments('work_id')
-    def get_work_index(self, work_id: str) -> typing.Optional[str]:
-        logger.debug(f'Fetching work details by work_id: {work_id}')
-        url = f'{self.base_url}/works/{work_id}/navigate'
-        result = do_get(url, exist_session=self.session)
-        # with open('../test/resources/index.html', 'w', encoding='utf-8') as f:
-        #     f.write(result)
         return result
 
     def close(self):
         logger.debug('Closing requests session')
         self.session.close()
-
-
-if __name__ == '__main__':
-    api = AO3Api(view_adult=True)
-    # api.get_works_by_user('guipaoding')
-    # api.get_work_details('35618773')
-    api.get_work_index('35618773')
-    api.close()
