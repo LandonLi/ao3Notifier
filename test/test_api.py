@@ -1,7 +1,7 @@
 import logging
 import unittest
 
-from utils.api import AO3Api
+from main.utils.api import AO3Api
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -19,9 +19,9 @@ class TestApi(unittest.TestCase):
         self.api.close()
 
     def test_decorator_required_arguments(self):
-        with self.assertLogs('utils.decorators', level='ERROR') as cm:
+        with self.assertLogs('main.utils.decorators', level='ERROR') as cm:
             self.api.get_index(None)
-            self.assertEqual(cm.output, ['ERROR:utils.decorators:<Func: get_index>: work_id is None!'])
+            self.assertEqual(cm.output, ['ERROR:main.utils.decorators:<Func: get_index>: work_id is None!'])
 
     def test_get_works(self):
         content = self.api.get_works('guipaoding')
