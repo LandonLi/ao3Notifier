@@ -1,0 +1,13 @@
+{
+  "author": "str",
+  "title": "str",
+  "url": "str",
+  "date": "datetime",
+  "fandoms": "list",
+  "symbols": "list",
+  "language": "str",
+  "words": "int",
+  "chapters": "int",
+  "kudos": "int",
+  "hits": "int"
+}

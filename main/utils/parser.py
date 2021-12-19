@@ -4,6 +4,8 @@ from datetime import datetime
 
 from bs4 import BeautifulSoup
 
+from main.utils.decorators import required_arguments
+
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.DEBUG
@@ -15,13 +17,15 @@ logger = logging.getLogger(__name__)
 class AO3Parser:
     base_url = 'https://archiveofourown.org'
 
-    def parse_works(self, content):
+    @required_arguments('content')
+    def parse_works(self, content: str) -> dict:
         logger.debug('Parsing works')
         works = dict()
         soup = BeautifulSoup(content, 'html.parser')
         lis = soup.find_all('li', id=re.compile('^work_.+'))
         for li in lis:
-            work_id = li.get('id').split('_')[1]
+            work_id = int(li.get('id').split('_')[1])
+            author = li.select_one('div h4 a:nth-child(2)').text.strip()
             tag_a_title = li.find('a')
             title = tag_a_title.text.strip()
             url = f'{self.base_url}{tag_a_title.get("href")}'
@@ -33,10 +37,11 @@ class AO3Parser:
             stats = li.find('dl', {'class': 'stats'})
             language = stats.find('dd', {'class': 'language'}).text.strip()
             words = int(stats.find('dd', {'class': 'words'}).text.strip().replace(',', ''))
-            chapters = stats.find('dd', {'class': 'chapters'}).text.strip()
+            chapters = int(stats.find('dd', {'class': 'chapters'}).text.strip().split('/')[0])
             kudos = int(stats.find('dd', {'class': 'kudos'}).text.strip().replace(',', ''))
             hits = int(stats.find('dd', {'class': 'hits'}).text.strip().replace(',', ''))
             work = {
+                'author': author,
                 'title': title,
                 'url': url,
                 'date': date,
@@ -51,7 +56,8 @@ class AO3Parser:
             works[work_id] = work
         return works
 
-    def parse_index(self, content):
+    @required_arguments('content')
+    def parse_index(self, content: str) -> dict:
         logger.debug('Parsing index')
         chapters = dict()
         soup = BeautifulSoup(content, 'html.parser')
@@ -71,7 +77,8 @@ class AO3Parser:
             chapters[chapter_id] = chapter
         return chapters
 
-    def parse_chapter(self, content):
+    @required_arguments('content')
+    def parse_chapter(self, content) -> dict:
         logger.debug('Parsing chapter')
         chapter = dict()
         soup = BeautifulSoup(content, 'html.parser')
