@@ -31,11 +31,11 @@ class TestApi(unittest.TestCase):
 
     def test_parse_works(self):
         logger.info('Testing method parse_works')
-
+        # read cached data
         with open(os.path.join(self.resources_path, 'works.html'), 'r', encoding='utf-8') as f:
             content = f.read()
         works = self.parser.parse_works(content)
-
+        # read rules
         with open(os.path.join(self.resources_path, 'verify', 'works.json'), 'r', encoding='utf-8') as f:
             check = json.load(f)
         for work in works.values():
@@ -43,11 +43,11 @@ class TestApi(unittest.TestCase):
 
     def test_parse_index(self):
         logger.info('Testing method parse_index')
-
+        # read cached data
         with open(os.path.join(self.resources_path, 'index.html'), 'r', encoding='utf-8') as f:
             content = f.read()
         chapters = self.parser.parse_index(content)
-
+        # read rules
         with open(os.path.join(self.resources_path, 'verify', 'index.json'), 'r', encoding='utf-8') as f:
             check = json.load(f)
         for chapter in chapters.values():
@@ -55,11 +55,11 @@ class TestApi(unittest.TestCase):
 
     def test_parse_chapter(self):
         logger.info('Testing method parse_chapter')
-
+        # read cached data
         with open(os.path.join(self.resources_path, 'chapter.html'), 'r', encoding='utf-8') as f:
             content = f.read()
         chapter = self.parser.parse_chapter(content)
-
+        # read rules
         with open(os.path.join(self.resources_path, 'verify', 'chapter.json'), 'r', encoding='utf-8') as f:
             check = json.load(f)
         check_items(self, chapter, check)
